@@ -22,7 +22,7 @@ moviesRouter.get("/:id", async (req, res, next) => {
   }
 });
 
-moviesRouter.post("/", async (req, res) => {
+moviesRouter.post("/", async (req, res, next) => {
   const { title, director, year, duration } = req.body;
 
   const movie = new Movie({
@@ -32,8 +32,12 @@ moviesRouter.post("/", async (req, res) => {
     duration
   });
 
-  const savedMovie = await movie.save();
-  res.status(201).json(savedMovie);
+  try {
+    const savedMovie = await movie.save();
+    res.status(201).json(savedMovie);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = moviesRouter;
