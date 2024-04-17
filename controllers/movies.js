@@ -6,11 +6,20 @@ moviesRouter.get("/", async (req, res) => {
   res.json(movies);
 });
 
-moviesRouter.get("/:id", async (req, res) => {
+moviesRouter.get("/:id", async (req, res, next) => {
   const id = req.params.id;
 
-  const movie = await Movie.findById(id);
-  res.json(movie);
+  try {
+    const movie = await Movie.findById(id);
+
+    if (movie) {
+      res.json(movie);
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 moviesRouter.post("/", async (req, res) => {
